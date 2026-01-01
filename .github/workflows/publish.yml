@@ -54,8 +54,10 @@ jobs:
             exit 1
           fi
 
-      - name: Publish to npm (Trusted Publishing)
-        run: npm publish --access public --provenance
+      - name: Publish to npm
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   publish-gpr:
     name: Publish to GitHub Packages
