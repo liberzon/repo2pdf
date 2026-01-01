@@ -1,0 +1,99 @@
+{
+  "name": "repo2pdf-cli",
+  "version": "1.0.0",
+  "description": "A non-interactive CLI tool for converting repositories to PDF - optimized for CI/CD and automation",
+  "main": "dist/clone.js",
+  "bin": {
+    "repo2pdf-cli": "dist/clone.js"
+  },
+  "files": [
+    "dist",
+    "LICENSE.md",
+    "README.md",
+    "CLI-REFERENCE.md",
+    "package.json",
+    "package-lock.json",
+    "repo2pdf.ignore",
+    "tsconfig.json"
+  ],
+  "scripts": {
+    "start": "node dist/clone.js",
+    "cli": "node dist/clone.js",
+    "watch": "tsc -w",
+    "build": "tsc",
+    "prepublishOnly": "npm run lint && npm run format && npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write .",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/liberzon/repo2pdf.git"
+  },
+  "keywords": [
+    "github",
+    "repository",
+    "pdf",
+    "cli",
+    "automation",
+    "ci-cd",
+    "nodejs",
+    "convert",
+    "document",
+    "code-to-pdf",
+    "non-interactive"
+  ],
+  "author": "liberzon",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/liberzon/repo2pdf/issues"
+  },
+  "homepage": "https://github.com/liberzon/repo2pdf#readme",
+  "contributors": [
+    {
+      "name": "malpou",
+      "url": "https://github.com/malpou"
+    },
+    {
+      "name": "LucasionGS",
+      "url": "https://github.com/LucasionGS"
+    },
+    {
+      "name": "jbirbal-skydom",
+      "url": "https://github.com/jbirbal-skydom"
+    }
+  ],
+  "dependencies": {
+    "chalk": "^5.2.0",
+    "commander": "^14.0.2",
+    "highlight.js": "^11.9.0",
+    "html-entities": "^2.3.6",
+    "inquirer": "^9.2.6",
+    "isbinaryfile": "^5.0.0",
+    "ora": "^6.3.1",
+    "pdfkit": "^0.13.0",
+    "prettier": "^3.0.3",
+    "simple-git": "^3.18.0",
+    "strip-comments": "^2.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@types/inquirer": "^9.0.3",
+    "@types/node": "^25.0.3",
+    "@types/pdfkit": "^0.12.10",
+    "@types/strip-comments": "^2.0.1",
+    "@typescript-eslint/eslint-plugin": "^8.51.0",
+    "@typescript-eslint/parser": "^8.51.0",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^16.5.0",
+    "typescript": "^5.1.3"
+  }
+}
