@@ -1,6 +1,6 @@
 {
   "name": "repo2pdf-cli",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A non-interactive CLI tool for converting repositories to PDF - optimized for CI/CD and automation",
   "main": "dist/clone.js",
   "bin": {
