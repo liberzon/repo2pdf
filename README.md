@@ -116,6 +116,7 @@ npx repo2pdf-cli [options] <path>
 - `--page-numbers` - Add page numbers to the PDF
 - `--one-pdf-per-file` - Generate one PDF per file
 - `--output-folder <folder>` - Output folder for one-pdf-per-file mode
+- `--include-hidden` - Include hidden files (files starting with `.`)
 
 **Examples:**
 
@@ -199,6 +200,8 @@ Please note that you need to have Node >= 18 installed on your system in order t
 ## Configuration
 
 repo2pdf-cli automatically ignores certain file types and directories (e.g., `.png`, `.git`).
+Hidden files and directories (those starting with `.`) are also ignored by default. Use `--include-hidden` to include them.
+
 To customize the files and directories to ignore, you can add a `repo2pdf.ignore` file.
 
 ### Ignore File Lookup Priority
@@ -207,8 +210,12 @@ The tool searches for `repo2pdf.ignore` in the following order:
 
 1. **Current working directory** (where you run the command) - Use this for project-specific ignore rules
 2. **Target repository directory** (the directory being converted) - Falls back to this if not found in current directory
+3. **Package installation directory** (where repo2pdf-cli is installed) - Use this for global default ignore rules
 
-This allows you to maintain a common ignore configuration in your working directory that applies to all repositories you convert, or use repository-specific ignore files.
+This allows you to:
+- Maintain a common ignore configuration in your working directory that applies to all repositories you convert
+- Use repository-specific ignore files
+- Set up global defaults in the package installation directory
 
 **Example:**
 
@@ -219,16 +226,36 @@ npx repo2pdf-cli /path/to/repo
 # It will look for:
 # 1. /Users/you/projects/repo2pdf.ignore (current directory - preferred)
 # 2. /path/to/repo/repo2pdf.ignore (target directory - fallback)
+# 3. <package-install-dir>/repo2pdf.ignore (package directory - global default)
 ```
 
-### Example of file structure
+### Example `repo2pdf.ignore` file
 
 ```json
 {
-  "ignoredFiles": ["tsconfig.json", "dist", "node_modules"],
-  "ignoredExtensions": [".raw"]
+  "ignoredFiles": [
+    "tsconfig.json",
+    "dist",
+    "node_modules",
+    "coverage",
+    ".env",
+    ".vscode",
+    "CHANGELOG.md"
+  ],
+  "ignoredExtensions": [
+    ".log",
+    ".raw",
+    ".map",
+    ".min.js",
+    ".min.css"
+  ]
 }
 ```
+
+**Fields:**
+
+- `ignoredFiles`: Array of file or directory names to exclude (matches exact basename)
+- `ignoredExtensions`: Array of file extensions to exclude (include the leading dot)
 
 ---
 
