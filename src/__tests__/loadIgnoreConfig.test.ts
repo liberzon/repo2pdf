@@ -17,7 +17,6 @@ vi.mock("fs", async () => {
 
 describe("loadIgnoreConfig", () => {
   const mockReadFile = vi.mocked(fs.promises.readFile);
-  const originalCwd = process.cwd();
 
   beforeEach(() => {
     vi.clearAllMocks();
