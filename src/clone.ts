@@ -28,7 +28,7 @@ import type chalkType from "chalk";
 // @ts-expect-error - ora is ESM-only
 import type oraType from "ora";
 
-function getPrettierParser(extension: string): string | null {
+export function getPrettierParser(extension: string): string | null {
   const parserOptions: { [key: string]: string } = {
     js: "babel",
     jsx: "babel",
@@ -85,6 +85,7 @@ program
     "Output folder for one-pdf-per-file mode",
     "./output",
   )
+  .option("--include-hidden", "Include hidden files (files starting with .)")
   .action(async (repoPath: string, options: any) => {
     const spinnerPromise = import("ora").then((oraModule) => {
       ora = oraModule.default;
@@ -126,6 +127,7 @@ program
           outputFileName,
           options.outputFolder,
           true, // keepRepo - always true for local repos
+          options.includeHidden || false,
         );
       })
       .catch((err) => {
@@ -137,7 +139,10 @@ program
       });
   });
 
-program.parse();
+// Only run CLI parsing when this file is executed directly, not when imported
+if (require.main === module) {
+  program.parse();
+}
 
 async function main(
   repoPath: string,
@@ -151,7 +156,10 @@ async function main(
   outputFileName: fs.PathLike,
   outputFolderName: string,
   keepRepo: boolean,
+  includeHidden: boolean,
 ) {
+  // Get package directory (one level up from dist/)
+  const packageDir = path.join(__dirname, "..");
   const gitP = git();
   let tempDir = "./tempRepo";
 
@@ -181,8 +189,8 @@ async function main(
     }
 
     spinner.start(chalk.blueBright("Processing files..."));
-    ignoreConfig = await loadIgnoreConfig(tempDir);
-    await appendFilesToPdf(tempDir, removeComments);
+    ignoreConfig = await loadIgnoreConfig(tempDir, packageDir);
+    await appendFilesToPdf(tempDir, removeComments, includeHidden);
 
     if (!onePdfPerFile) {
       if (doc) {
@@ -228,12 +236,21 @@ async function main(
     console.error(err);
   }
 
-  async function appendFilesToPdf(directory: string, removeComments = false) {
+  async function appendFilesToPdf(
+    directory: string,
+    removeComments = false,
+    includeHiddenFiles = false,
+  ) {
     const files = await fsPromises.readdir(directory);
 
     for (const file of files) {
       const filePath = path.join(directory, file);
       const stat = await fsPromises.stat(filePath);
+
+      // Skip hidden files (starting with .) unless --include-hidden is set
+      if (!includeHiddenFiles && file.startsWith(".")) {
+        continue;
+      }
 
       const excludedNames = universalExcludedNames;
       const excludedExtensions = universalExcludedExtensions;
@@ -361,7 +378,7 @@ async function main(
           doc?.end();
         }
       } else if (stat.isDirectory()) {
-        await appendFilesToPdf(filePath, removeComments);
+        await appendFilesToPdf(filePath, removeComments, includeHiddenFiles);
       }
     }
   }
